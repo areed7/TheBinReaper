@@ -1,6 +1,7 @@
 from tkinter import filedialog; 
 from tkinter import messagebox;
 from collections import namedtuple
+import json
 #Used for the following:
     #Create new projects
     #Add or remove tests for those projects
@@ -32,20 +33,16 @@ from collections import namedtuple
 
 #This file does not run programs. It should only parse data in and out, and provide the ""
 
-
-#testdef named tuple for the tests
-TestDef = namedtuple(
-    "TestDef",
-    ["flow_set", "test_name", "sub_test_name", "bin", "units", "min_limit", "max_limit"]
-)
-
 class TestGrimoire:
     def __init__(self):
         self.programPath = ""
         self.projectName = ""
         self.projectVersion = ""
+        self.creationDate = ""
+        self.modificationDate = ""
         self.bins = {} #Simple lookup table for the bins.
-        self.tests = [] #Tests are stored as a set of tuples Each Tuple is the same order as above. FlowSet,TestName,SubTestName,Bin,Units,MinLimit,MaxLimit
+        self.tests = [] #Tests are simply a list of jsons.
+        self.flows = []
 
     #Open a project file and attempt to parse the file.
     #Should throw errors.
@@ -58,74 +55,76 @@ class TestGrimoire:
             data = file.read()
         
         #Parse conditions for each line type.
-        versionLine10Counter = 0
-        testnameLine20Counter = 0
+        line_id10Counter = 0
+        line_id20Counter = 0
         for line in data.splitlines():
-            
+            #Try to parse the line as Json. Throw error if fails.
+            jLine={}
+            try:
+                jLine = json.loads(line)
+            except Exception as e:
+                #Close the project throw an error and leave the open project function.
+                messagebox.showerror("Error", "Failed to parse line as json: " + line)
+                self.close_project()
+                return
             match True:
                 
                 ######################################
                 ##          Parse Version 10,       ##
                 ######################################
-                case _ if line.startswith("10,"):
-                    print("Version Line: " + line)
-                    versionLine10Counter = versionLine10Counter + 1
-                    if( versionLine10Counter >= 2):
-                         messagebox.showerror("Error", "More than one version lines detected in the .bprg file. Please ensure only one version \"10,\" line exists.")
-                         self.close_project()
-                         break
+                case _ if jLine["line_id"] == 10:
+                    line_id10Counter = line_id10Counter + 1
+                    if(line_id10Counter >= 2):
+                        messagebox.showerror("Error", "More than one line id 10 spotted.")
+                        self.close_project()
+                        return
+                    self.creationDate       = jLine["creation_date"]
+                    self.modificationDate   = jLine["modification_date"]
                     pass
                 ##################################
                 ##      Parse Test Name 20,     ##
                 ##################################
-                case _ if line.startswith("20,"):
-                    print("Test Name Line:" + line)
-                    testnameLine20Counter = testnameLine20Counter + 1
-                    if( testnameLine20Counter >= 2):
-                         messagebox.showerror("Error", "More than one test name lines detected in the .bprg file. Please ensure only one version \"20,\" line exists.")
-                         self.close_project()
-                         break
+                case _ if jLine["line_id"] == 20:
+                    line_id20Counter = line_id20Counter + 1
+                    if(line_id20Counter >= 2):
+                        messagebox.showerror("Error", "More than one line id 20 spotted.")
+                        self.close_project()
+                        return
+                    self.projectName        = jLine["program_name"]
+                    self.projectVersion     = jLine["program_version"]
                     pass
                 ##############################
                 ##      Prase Bins 50,      ##
                 ##############################
-                case _ if line.startswith("50,"):
-                    try:
-                        sLine=line.split(",")
-                        self.bins[sLine[1]] = sLine[2]
-                    except Exception as e:
-                        print("Failed to parse line: " + line)
-                        messagebox.showerror("Error", "Failed to load bins. Please verify the .bprg file. Lines that have the following format: \"50,BinNumber,BinName\"")
-                        self.close_project()
-                        break
+                case _ if jLine["line_id"] == 50:
+                    self.bins[ jLine["bin_num"] ]   =   jLine["bin_name"]
                     pass
                 ##################################
                 ##      Parse Test Info 100,    ##
                 ##################################
-                case _ if line.startswith("100,"):
-                    try:
-                        sLine=line.split(",")
-                        self.tests.append(TestDef(sLine[1],sLine[2],sLine[3],sLine[4],sLine[5],sLine[6],sLine[7]))
-
-                        #Limit Sanity Check
-                        if(float(sLine[6]) > float(sLine[7])):
-                            messagebox.showerror("Error", "Limit sanity check failed.")
-                            raise ValueError("Limit Sanity Check")
-                    except Exception as e:
-                        print("Failed to parse line: " + line)
-                        messagebox.showerror("Error", "Failed to parse a test for line: " + line)
-                        self.close_project()
-                        break
+                case _ if jLine["line_id"] == 100:
+                    self.tests.append( jLine )
                     pass
+
+        ##########################################################
+        ##      Parse the tests to populate the flows list.     ##
+        ##########################################################
+        self.flows = list({j["flow_set"] for j in self.tests})
+        print(self.flows)
+        
 
     #Clear out all info that was previously loaded.
     def close_project(self):
         self.programPath = ""
         self.projectName = ""
         self.projectVersion = ""
-        self.bins = {}
-        self.tests = []
+        self.creationDate = ""
+        self.modificationDate = ""
+        self.bins = {} #Simple lookup table for the bins.
+        self.tests = [] #Tests are stored as a set of tuples Each Tuple is the same order as above. FlowSet,TestName,SubTestName,Bin,Units,MinLimit,MaxLimit
+        self.flows = []
     
-fc = TestGrimoire()
-fc.open_project()
-print(fc.tests)
+
+if __name__ == "__main__":
+    tg = TestGrimoire()
+    tg.open_project()

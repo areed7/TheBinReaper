@@ -1,13 +1,17 @@
-10,1.0,22DEC2025 21:40,22DEC2025 22:48
-20,Resistor,RevA
-50,1,Pass
-50,2,Pass
-50,3,Pass
-50,4,Pass
-50,5,Resistance 1mA 25C
-50,6,Resistance 2mA 25C
-50,8,Continuity
-90,FlowSet,TestName,SubTestName,Bin,Units,MinLimit,MaxLimit
-100,25C,Resistance,Resistance 1mA,5,kOhms,0.99,1.01
-100,25C,Resistance,Resistance 2mA,6,kOhms,0.99,1.01
-100,-55C,Resistance,Resistance 1mA,5,kOhms,0.99,1.01
+{"line_id":10,"bprg_version":1.1,"creation_date":"22DEC2025 21:40","modification_date":"22DEC2025 22:48"}
+{"line_id":20,"program_name":"Resistor","program_version":"RevA"}
+{"line_id":50,"bin_num":1,"bin_name":"Pass"}
+{"line_id":50,"bin_num":2,"bin_name":"Pass"}
+{"line_id":50,"bin_num":3,"bin_name":"Pass"}
+{"line_id":50,"bin_num":4,"bin_name":"Pass"}
+{"line_id":50,"bin_num":5,"bin_name":"Resistance 1mA 25C"}
+{"line_id":50,"bin_num":6,"bin_name":"Resistance 2mA 25C"}
+{"line_id":50,"bin_num":7,"bin_name":"Resistance 3mA 25C"}
+{"line_id":50,"bin_num":8,"bin_name":"Continuity"}
+{"line_id":90,"test_headers":"FlowSet,TestName,SubTestName,Bin,Units,MinLimit,MaxLimit,JSON Test Parameters"}
+{"line_id":100,"program_file":"Resistor.py","flow_set":"25C","test_name":"Resistance","sub_test_name":"1mA","bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma":1.0}}
+{"line_id":100,"program_file":"Resistor.py","flow_set":"25C","test_name":"Resistance","sub_test_name":"2mA","bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma":2.0}}
+{"line_id":100,"program_file":"Resistor.py","flow_set":"25C","test_name":"Resistance","sub_test_name":"3mA","bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma":3.0}}
+{"line_id":100,"program_file":"Resistor.py","flow_set":"125C","test_name":"Resistance","sub_test_name":"1mA","bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma":1.0}}
+{"line_id":100,"program_file":"Resistor.py","flow_set":"125C","test_name":"Resistance","sub_test_name":"2mA","bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma":2.0}}
+{"line_id":100,"program_file":"Resistor.py","flow_set":"125C","test_name":"Resistance","sub_test_name":"3mA","bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma":3.0}}
