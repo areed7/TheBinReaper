@@ -1,0 +1,13 @@
+10,1.0,22DEC2025 21:40,22DEC2025 22:48
+20,Resistor,RevA
+50,1,Pass
+50,2,Pass
+50,3,Pass
+50,4,Pass
+50,5,Resistance 1mA 25C
+50,6,Resistance 2mA 25C
+50,8,Continuity
+90,FlowSet,TestName,SubTestName,Bin,Units,MinLimit,MaxLimit
+100,25C,Resistance,Resistance 1mA,5,kOhms,0.99,1.01
+100,25C,Resistance,Resistance 2mA,6,kOhms,0.99,1.01
+100,-55C,Resistance,Resistance 1mA,5,kOhms,0.99,1.01
