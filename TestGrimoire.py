@@ -2,6 +2,7 @@ from tkinter import filedialog;
 from tkinter import messagebox;
 from collections import namedtuple
 import json
+import os
 #Used for the following:
     #Create new projects
     #Add or remove tests for those projects
@@ -36,19 +37,21 @@ import json
 class TestGrimoire:
     def __init__(self):
         self.programPath = ""
+        self.programDirectory = ""
         self.projectName = ""
         self.projectVersion = ""
         self.creationDate = ""
         self.modificationDate = ""
         self.bins = {} #Simple lookup table for the bins.
         self.tests = [] #Tests are simply a list of jsons.
-        self.flows = []
+        self.flows = {}
 
     #Open a project file and attempt to parse the file.
     #Should throw errors.
     def open_project(self):
         
         self.programPath = filedialog.askopenfilename(filetypes=[("Bin Reaper Program", "*.bprg")])
+        self.programDirectory = os.path.dirname(self.programPath)
         #Parse the project. First grab the name and version.
         data=[]
         with open(self.programPath, "r") as file:
@@ -99,32 +102,46 @@ class TestGrimoire:
                 case _ if jLine["line_id"] == 50:
                     self.bins[ jLine["bin_num"] ]   =   jLine["bin_name"]
                     pass
+
+                ##############################
+                ##      Parse Flows 90      ##
+                ##############################
+                case _ if jLine["line_id"] == 90:
+                    self.flows[jLine["flow_set"]] = jLine["test_order"]
+                    pass
                 ##################################
                 ##      Parse Test Info 100,    ##
                 ##################################
                 case _ if jLine["line_id"] == 100:
                     self.tests.append( jLine )
                     pass
+    
+    #Combines all the parameters for each of the sub tests into one lookup table.
+    def grabParams(self, testName):
+        subtests    = [j for j in self.tests if j["test_name"] == testName]
+        params = {}
+        for subtest in subtests:
+            params = {**params, **subtest["params"]}
+        return params
 
-        ##########################################################
-        ##      Parse the tests to populate the flows list.     ##
-        ##########################################################
-        self.flows = list({j["flow_set"] for j in self.tests})
-        print(self.flows)
-        
+    def grabSubtests(self, testName):
+        subtests    = [j for j in self.tests if j["test_name"] == testName]
+        return subtests
 
     #Clear out all info that was previously loaded.
     def close_project(self):
         self.programPath = ""
+        self.programDirectory = ""
         self.projectName = ""
         self.projectVersion = ""
         self.creationDate = ""
         self.modificationDate = ""
         self.bins = {} #Simple lookup table for the bins.
-        self.tests = [] #Tests are stored as a set of tuples Each Tuple is the same order as above. FlowSet,TestName,SubTestName,Bin,Units,MinLimit,MaxLimit
-        self.flows = []
+        self.tests = [] #Tests are simply a list of jsons.
+        self.flows = {} 
     
 
 if __name__ == "__main__":
     tg = TestGrimoire()
     tg.open_project()
+    print(tg.grabParams("ResistanceB"))

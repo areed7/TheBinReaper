@@ -28,10 +28,8 @@ def close_project():
     projectCreationDateVar.set("Creation Date: " + tg.creationDate)
     projectModificationDateVar.set("Modification Date: " + tg.modificationDate)
 
-def start_new_lot():
-
-
-def save_datalogs():
+#def start_new_lot():
+#def save_datalogs():
 
 
 
