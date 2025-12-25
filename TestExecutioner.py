@@ -63,4 +63,5 @@ if __name__ == "__main__":
     te.execute(tg, dg, "SN1")
     te.execute(tg, dg, "SN2")
     te.execute(tg, dg, "SN3")
-    print(dg.testResults)
+    
+    dg.writeDatalog()

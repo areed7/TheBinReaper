@@ -1,5 +1,5 @@
-from tkinter import filedialog; 
-from tkinter import messagebox;
+from tkinter import filedialog
+from tkinter import messagebox
 from collections import namedtuple
 import json
 import os
@@ -144,6 +144,5 @@ class TestGrimoire:
 if __name__ == "__main__":
     tg = TestGrimoire()
     tg.open_project()
-    dg = DUTGrimoire("180520_14", tg, "25C")
     
     print(tg.grabParams("ResistanceB"))

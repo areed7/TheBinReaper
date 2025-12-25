@@ -1,22 +1,34 @@
 from TestGrimoire import TestGrimoire
+from datetime import datetime
+from tkinter import filedialog
 import socket
 class DUTGrimoire:
     def __init__(self, lotName: str, tg: TestGrimoire, selectedTestFlow: str):
         self.computerName   = socket.gethostname()
         self.lotName        = lotName
+        self.dateStart      = datetime.now().strftime("%d%b%Y %H:%M").upper()
         self.testHeaders    = []
+        self.maxLimits      = []
+        self.minLimits      = []
+        self.testUnits      = []
         self.testIds        = []
         self.testResults    = []
 
-        #First column for test headers is the sn
-        #Second is the bin number
-        #Followed by all the test names
-        self.testHeaders.append("SN")
-        self.testHeaders.append("BIN")
+        
+        self.testHeaders.append("")
+        self.testHeaders.append("")
 
-        #Append nothing for the first two test ids list.
+        self.testUnits.append("SN")
+        self.testUnits.append("BIN")
+
         self.testIds.append("")
         self.testIds.append("")
+        
+        self.maxLimits.append("Max Limits")
+        self.maxLimits.append("")
+
+        self.minLimits.append("Min Limits")
+        self.minLimits.append("")
 
         #Parse out the current test flow, and assemble the test headers
         testList = tg.flows[selectedTestFlow].split(",")
@@ -32,7 +44,10 @@ class DUTGrimoire:
                 self.testIds.append(testIDStr)
                 first = next(j for j in subtests if j["sub_test_index"] == stIndex)
                 self.testHeaders.append( test + "_" + first["sub_test_name"])
-
+                self.minLimits.append(first["min_limit"])
+                self.maxLimits.append(first["max_limit"])
+                self.testUnits.append(first["units"])
+                
         print(self.testIds)
         print(self.testHeaders)
 
@@ -41,7 +56,22 @@ class DUTGrimoire:
         self.testResults.append(results)
 
     def writeDatalog(self):
-        return
+        path = filedialog.asksaveasfilename(defaultextension=".csv")
+        with open(path, "w") as f:
+            f.write("Date,"+ self.dateStart + "\n")
+            f.write("Computer Name," + self.computerName + "\n")
+            f.write("Lot,"+ self.lotName + "\n")
+            f.write(",".join(map(str, self.testIds)) + "\n")
+            
+            f.write(",".join(map(str, self.testHeaders)) + "\n")
+            f.write(",".join(map(str, self.maxLimits)) + "\n")
+            f.write(",".join(map(str, self.minLimits)) + "\n")
+            f.write(",".join(map(str, self.testUnits)) + "\n")
+            
+            
+            for result in self.testResults:
+                f.write(",".join(map(str, result)) + "\n")
+
 
 
 if __name__ == "__main__":
