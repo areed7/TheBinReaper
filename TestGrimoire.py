@@ -138,10 +138,12 @@ class TestGrimoire:
         self.modificationDate = ""
         self.bins = {} #Simple lookup table for the bins.
         self.tests = [] #Tests are simply a list of jsons.
-        self.flows = {} 
+        self.flows = {}
     
 
 if __name__ == "__main__":
     tg = TestGrimoire()
     tg.open_project()
+    dg = DUTGrimoire("180520_14", tg, "25C")
+    
     print(tg.grabParams("ResistanceB"))

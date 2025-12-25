@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 
 from TestGrimoire import TestGrimoire
+from TestExecutioner import TestExecutioner
 
 #initialize the test grimoire
 tg=TestGrimoire()
+te=TestExecutioner()
 
 root = tk.Tk()
 root.title("Bin Reaper")
