@@ -5,6 +5,8 @@ from DUTGrimoire import DUTGrimoire
 from TestGrimoire import TestGrimoire
 from TestExecutioner import TestExecutioner
 
+import re
+
 RED = "\033[31m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
@@ -42,14 +44,21 @@ class TheBinReaper:
         self.dg = DUTGrimoire(self.tg, self.currentLot, self.currentFlow)
     
     def set_lot(self, lotName: str):
+        if self.tg.projectName == "":
+            print("")
+            print("No Program Loaded...")
+            print("")
+            return
         self.currentLot = lotName
+        self.dg.set_lot(lotName)
     
     def set_sn(self, sn:str):
         self.currentSN = sn
 
     def execute(self):
         self.te.execute(self.tg, self.dg, self.currentFlow, self.currentSN)
-        self.dg.autolog_write(self.tg.programDirectory)
+        if self.currentFlow != "None" and self.dg != None:
+            self.dg.autolog_write(self.tg.programDirectory)
 
     def setflow_prompt(self):
         if self.tg.projectName == "":
@@ -130,14 +139,14 @@ class TheBinReaper:
         print("======================================================")
         print("                      HELP MENU                       ")
         print("======================================================")
-        print("clear\t\t\t\t--\tClears the screen of all current info.")
-        print("info\t\t\t\t--\tPrints out the current lot and program information.")
+        print("clear[c]\t\t\t--\tClears the screen of all current info.")
+        print("info[i]\t\t\t\t--\tPrints out the current lot and program information.")
         print("openprogram\t\t\t--\tPops up a dialog that will allow the user to select the bprg program file.")
         print("closeprogram\t\t\t--\tCloses the currently open program.")
-        print("setflow\t\t\t\t--\tLists all available flows for the current program and promps the user to set it. This will reset data.")
+        print("setflow[sf]\t\t\t--\tLists all available flows for the current program and promps the user to set it. This will reset data.")
         print("lot [lot name]\t\t\t--\tSets the lot name that will be applied to the datalog.")
         print("sn [serial number]\t\t--\tSets the current serial number.")
-        print("execute\t\t--\tRuns the program on the current dut.")
+        print("execute[e/t]\t\t\t--\tRuns the program on the current dut.")
         print("savedata\t\t\t--\tOpens a dialog to save data.")
         print("")
 
@@ -179,19 +188,19 @@ class TheBinReaper:
                         print("Failed to set lot. Please ensure you're using the command correctly.")
                     pass
 
-                case _ if line.lower() == "execute":
+                case _ if line.lower() in ["execute","e","t"]:
                     self.execute()
                     pass
 
-                case _ if line.lower() == "info":
+                case _ if line.lower() in ["info","i"]:
                     self.print_info()
                     pass
                 
-                case _ if line.lower() == "setflow":
+                case _ if line.lower() in ["setflow","sf"]:
                     self.setflow_prompt()
                     pass
 
-                case _ if line.lower() == "help":
+                case _ if line.lower() in ["help", "h"]:
                     self.print_help()
                     pass
                 
@@ -199,7 +208,7 @@ class TheBinReaper:
                     self.dg.write_datalog()
                     pass
 
-                case _ if line.lower() == "clear":
+                case _ if line.lower() in ["clear", "c"]:
                     print("\033c", end="")
                     pass
 
