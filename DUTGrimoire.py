@@ -3,7 +3,10 @@ from datetime import datetime
 from tkinter import filedialog
 import socket
 class DUTGrimoire:
-    def __init__(self, lotName: str, tg: TestGrimoire, selectedTestFlow: str):
+    def __init__(self, tg: TestGrimoire, lotName: str, selectedTestFlow: str):
+
+        
+
         self.computerName   = socket.gethostname()
         self.lotName        = lotName
         self.dateStart      = datetime.now().strftime("%d%b%Y %H:%M").upper()
@@ -13,6 +16,10 @@ class DUTGrimoire:
         self.testUnits      = []
         self.testIds        = []
         self.testResults    = []
+
+        if selectedTestFlow == "None":
+            print("Error: No flow selected in DUTGrimoire. Please select a flow before trying again.")
+            return
 
         
         self.testHeaders.append("")
@@ -37,7 +44,7 @@ class DUTGrimoire:
         for test in testList:
             testIndex = testIndex + 1
             #Grab the subtests and number of sub tests for this program.
-            subtests    =   tg.grabSubtests(test)
+            subtests    =   tg.grab_subtests(test)
             numSubtests = len(subtests)
             for stIndex in range(0, numSubtests):
                 testIDStr = str(testIndex) + "_" + str(stIndex)
@@ -48,15 +55,18 @@ class DUTGrimoire:
                 self.maxLimits.append(first["max_limit"])
                 self.testUnits.append(first["units"])
                 
-        print(self.testIds)
-        print(self.testHeaders)
+    
+    def set_lot(self, lotName: str):
+        self.lotName = lotName
 
-
-    def addResult(self, results):
+    def add_result(self, results):
         self.testResults.append(results)
 
-    def writeDatalog(self):
+    def write_datalog(self):
         path = filedialog.asksaveasfilename(defaultextension=".csv")
+        if( path == "" ):
+            print("No path selected to save datalogs.")
+            return
         with open(path, "w") as f:
             f.write("Date,"+ self.dateStart + "\n")
             f.write("Computer Name," + self.computerName + "\n")
@@ -71,11 +81,3 @@ class DUTGrimoire:
             
             for result in self.testResults:
                 f.write(",".join(map(str, result)) + "\n")
-
-
-
-if __name__ == "__main__":
-    tg = TestGrimoire()
-    tg.open_project()
-
-    dg = DUTGrimoire("180520_14", tg, "25C")

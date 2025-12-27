@@ -9,6 +9,7 @@
 {"line_id":50,"bin_num":7,"bin_name":"Resistance 3mA 25C"}
 {"line_id":50,"bin_num":8,"bin_name":"Continuity"}
 {"line_id":90,"flow_set":"25C","test_order":"Resistance,ResistanceB"}
+{"line_id":90,"flow_set":"R2","test_order":"Resistance"}
 {"line_id":100,"program_file":"Resistor.py","test_name":"Resistance","sub_test_name":"1mA","sub_test_index":0,"bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma_A":1.0}}
 {"line_id":100,"program_file":"Resistor.py","test_name":"Resistance","sub_test_name":"2mA","sub_test_index":1,"bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma_B":2.0}}
 {"line_id":100,"program_file":"Resistor.py","test_name":"Resistance","sub_test_name":"3mA","sub_test_index":2,"bin":5,"units":"kOhm","min_limit":0.99,"max_limit":1.01,"params":{"source_i_ma_C":3.0}}

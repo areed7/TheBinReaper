@@ -51,6 +51,11 @@ class TestGrimoire:
     def open_project(self):
         
         self.programPath = filedialog.askopenfilename(filetypes=[("Bin Reaper Program", "*.bprg")])
+
+        if(self.programPath == ""):
+            print("No Program Selected")
+            return
+
         self.programDirectory = os.path.dirname(self.programPath)
         #Parse the project. First grab the name and version.
         data=[]
@@ -117,16 +122,19 @@ class TestGrimoire:
                     pass
     
     #Combines all the parameters for each of the sub tests into one lookup table.
-    def grabParams(self, testName):
+    def grab_params(self, testName):
         subtests    = [j for j in self.tests if j["test_name"] == testName]
         params = {}
         for subtest in subtests:
             params = {**params, **subtest["params"]}
         return params
 
-    def grabSubtests(self, testName):
+    def grab_subtests(self, testName):
         subtests    = [j for j in self.tests if j["test_name"] == testName]
         return subtests
+    
+    def grab_available_flows(self):
+        return list(self.flows.keys())
 
     #Clear out all info that was previously loaded.
     def close_project(self):
@@ -139,10 +147,3 @@ class TestGrimoire:
         self.bins = {} #Simple lookup table for the bins.
         self.tests = [] #Tests are simply a list of jsons.
         self.flows = {}
-    
-
-if __name__ == "__main__":
-    tg = TestGrimoire()
-    tg.open_project()
-    
-    print(tg.grabParams("ResistanceB"))
