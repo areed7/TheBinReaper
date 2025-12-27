@@ -5,7 +5,6 @@ from DUTGrimoire import DUTGrimoire
 from TestGrimoire import TestGrimoire
 from TestExecutioner import TestExecutioner
 
-
 RED = "\033[31m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
@@ -50,6 +49,7 @@ class TheBinReaper:
 
     def execute(self):
         self.te.execute(self.tg, self.dg, self.currentFlow, self.currentSN)
+        self.dg.autolog_write(self.tg.programDirectory)
 
     def setflow_prompt(self):
         if self.tg.projectName == "":
